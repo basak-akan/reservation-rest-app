@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  code-challenge:  # This matches the network name used in the service definition
+    driver: "bridge"
+    name: code-challenge
+
+services:
+  mysql:
+    container_name: reservation-app-mysql
+    image: docker.io/library/mysql:8.2.0
+    environment:
+      MYSQL_DATABASE: reservationapp
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD:
+    pull_policy: always
+    volumes:
+      - reservation-app-mysql-data:/var/lib/mysql
+    env_file:
+      - ./mysql/default.env
+    ports:
+      - "127.0.0.1:3306:3306"
+    expose:
+      - "3306"
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --collation-server=utf8mb4_unicode_ci --explicit_defaults_for_timestamp --max_connections=100000
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --silent
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 300s
+    networks:
+      - code-challenge  # Adjusted to match the defined network
+
+  app:
+    container_name: reservation-rest-app
+    image: code-challenge-app
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/reservationapp
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+    networks:
+      - code-challenge
+
+volumes:
+  reservation-app-mysql-data:
+    name: reservation-app-mysql-data
