@@ -6,8 +6,8 @@ It includes functionalities for managing user data and reservations through REST
 ## Features
 
 - **User Management**: Create, retrieve, update, and delete users.
-- **Reservation Management**: Manage reservations with features to add, view, update, and cancel reservations.
-- **Search Capability**: Filter users and reservations based on specific criteria.
+- **Reservation Management**: Manage reservations with features to add, view, update, and delete reservations.
+- **Filter Capability**: Filter reservations based on specific date range criteria. Filter users based on name or email criteria.
 
 ## Technologies
 
@@ -24,7 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 - Java JDK 21
 - Docker
-- Gradle (optional, as you can use the embedded Gradle wrapper)
+- Gradle
 
 ### Installation
 
@@ -32,7 +32,7 @@ These instructions will get you a copy of the project up and running on your loc
 
    ```bash
    git clone https://github.com/basak-akan/reservation-rest-app.git
-   cd codechallenge 
+   cd .\codechallenge\docker
    
 2. **Start the application with Docker**
 
