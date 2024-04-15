@@ -43,7 +43,7 @@ class ReservationServiceImplTest {
   @BeforeEach
   void setUp() {
     user = new User("test@example.com", "Test", "User");
-    reservationDTO = new ReservationDTO(1L, "test@example.com", "Test", "User", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
+    reservationDTO = new ReservationDTO(1L, "test@example.com", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
     reservation = new Reservation(user, 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
     MockitoAnnotations.openMocks(this);
   }
@@ -116,7 +116,7 @@ class ReservationServiceImplTest {
 
   @Test
   void testReservationAtOpeningTime() {
-    reservationDTO = new ReservationDTO(null, "test@example.com", "Test", "User", 4, 1, LocalDate.now().plusDays(1), OPENING_TIME);
+    reservationDTO = new ReservationDTO(null, "test@example.com", 4, 1, LocalDate.now().plusDays(1), OPENING_TIME);
     when(userService.checkUserIfExists(anyString())).thenReturn(user);
     when(reservationRepository.save(any())).thenReturn(reservation);
 
@@ -125,7 +125,7 @@ class ReservationServiceImplTest {
 
   @Test
   void testReservationAtClosingTime() {
-    reservationDTO = new ReservationDTO(null, "test@example.com", "Test", "User", 4, 1, LocalDate.now().plusDays(1), CLOSING_TIME.minusMinutes(59));
+    reservationDTO = new ReservationDTO(null, "test@example.com", 4, 1, LocalDate.now().plusDays(1), CLOSING_TIME.minusMinutes(59));
     when(userService.checkUserIfExists(anyString())).thenReturn(user);
     when(reservationRepository.save(any())).thenReturn(reservation);
 
@@ -144,7 +144,7 @@ class ReservationServiceImplTest {
 
   @Test
   void testInvalidNumberOfGuests() {
-    reservationDTO = new ReservationDTO(null, "test@example.com", "Test", "User", 3, 2, LocalDate.now().plusDays(1), LocalTime.of(20, 0)); // 3 guests but 2 tables
+    reservationDTO = new ReservationDTO(null, "test@example.com", 3, 2, LocalDate.now().plusDays(1), LocalTime.of(20, 0)); // 3 guests but 2 tables
     when(userService.checkUserIfExists(anyString())).thenReturn(user);
     when(reservationRepository.save(any())).thenReturn(reservation);
 
@@ -154,7 +154,7 @@ class ReservationServiceImplTest {
 
   @Test
   void testReservationInThePast() {
-    reservationDTO = new ReservationDTO(null, "test@example.com", "Test", "User", 4, 1, LocalDate.now().minusDays(1), LocalTime.of(20, 0));
+    reservationDTO = new ReservationDTO(null, "test@example.com", 4, 1, LocalDate.now().minusDays(1), LocalTime.of(20, 0));
     when(userService.checkUserIfExists(anyString())).thenReturn(user);
 
     BadRequestException thrown = assertThrows(BadRequestException.class, () -> reservationService.createReservation(reservationDTO));

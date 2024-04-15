@@ -16,8 +16,6 @@ import java.time.LocalTime;
  *
  * @param id The unique identifier for the reservation.
  * @param userEmail The email of the user who made the reservation.
- * @param userName The name of the user who made the reservation.
- * @param userSurname The surname of the user who made the reservation.
  * @param numberOfGuests The number of guests included in the reservation.
  * @param tablesReserved The number of tables reserved.
  * @param reservationDate The date of the reservation.
@@ -28,11 +26,8 @@ public record ReservationDTO(
     @NotNull(message = "User email must not be null")
     @Email(message = "Invalid email format")
     String userEmail,
-    String userName,
-    String userSurname,
     @Min(value = 1, message = "There must be at least one guest")
     int numberOfGuests,
-
     @Min(value = 1, message = "At least one table must be reserved")
     @Max(value = 5, message = "Cannot reserve more than 5 tables")
     int tablesReserved,
@@ -54,8 +49,6 @@ public record ReservationDTO(
     return new ReservationDTO(
         reservation.getId(),
         reservation.getUser().getEmail(),
-        reservation.getUser().getName(),
-        reservation.getUser().getSurname(),
         reservation.getNumberOfGuests(),
         reservation.getTablesReserved(),
         reservation.getReservationDate(),

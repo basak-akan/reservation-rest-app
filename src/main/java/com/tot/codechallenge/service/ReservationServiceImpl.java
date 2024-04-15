@@ -32,7 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
 
   private final UserRepository userRepository;
 
-  protected static final LocalTime OPENING_TIME = LocalTime.of(19, 00);
+  protected static final LocalTime OPENING_TIME = LocalTime.of(19, 0);
   protected static final LocalTime CLOSING_TIME = LocalTime.of(23, 59);
   protected static final int RESTAURANT_MAX_TABLES = 5;
   protected static final int MAX_GUESTS_EACH_TABLE = 4;

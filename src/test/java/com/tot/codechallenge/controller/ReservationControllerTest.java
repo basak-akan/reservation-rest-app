@@ -36,7 +36,7 @@ public class ReservationControllerTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.initMocks(this);
-    reservationDTO = new ReservationDTO(1L, "test@example.com", "Test", "User", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
+    reservationDTO = new ReservationDTO(1L, "test@example.com", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
   }
 
   @Test
@@ -106,9 +106,7 @@ public class ReservationControllerTest {
   void testCreateReservationThrowsException() throws Exception {
     when(reservationService.createReservation(any(ReservationDTO.class))).thenThrow(new BadRequestException("Invalid data"));
 
-    Exception exception = assertThrows(BadRequestException.class, () -> {
-      reservationController.createReservation(reservationDTO);
-    });
+    Exception exception = assertThrows(BadRequestException.class, () -> reservationController.createReservation(reservationDTO));
 
     assertEquals("Invalid data", exception.getMessage());
   }

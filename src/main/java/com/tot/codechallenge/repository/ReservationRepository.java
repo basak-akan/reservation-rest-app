@@ -4,8 +4,6 @@ import com.tot.codechallenge.model.Reservation;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -33,17 +31,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
    * @return an Optional containing the found reservation if it exists
    */
   Optional<Reservation> findByUserEmailAndReservationDate(String email, LocalDate reservationDate);
-
-  /**
-   * Retrieves a page of reservations based on a search term that matches user details.
-   * The search term is matched against user's name, surname, and email.
-   * This method supports pagination.
-   *
-   * @param startDate start date for the date range to search
-   * @param endDate end date for the date range to search
-   * @param pageable pagination information
-   * @return a page of reservations between date range
-   */
-  Page<Reservation> findByReservationDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
-
 }
