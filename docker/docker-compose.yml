@@ -9,10 +9,6 @@ services:
   mysql:
     container_name: reservation-app-mysql
     image: docker.io/library/mysql:8.2.0
-    environment:
-      MYSQL_DATABASE: reservationapp
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_ROOT_PASSWORD:
     pull_policy: always
     volumes:
       - reservation-app-mysql-data:/var/lib/mysql
