@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
  * This class provides methods to create, update, delete, and retrieve users along with listing all users with pagination.
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   /**
@@ -35,7 +36,6 @@ public class UserServiceImpl implements UserService {
    * @return a page of UserDTO containing user details
    */
   @Override
-  @Transactional(readOnly = true)
   public Page<UserDTO> listAllUsers(String searchTerm, Pageable pageable) {
     Page<User> users = userRepository.findByUserDetails(searchTerm, pageable);
     return users.map(UserDTO::fromEntity);
@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
    * @throws IllegalArgumentException if no user is found with the provided email
    */
   @Override
-  @Transactional(readOnly = true)
   public User checkUserIfExists(String email) throws IllegalArgumentException {
     Optional<User> existingUser = userRepository.findByEmail(email);
     if (existingUser.isPresent()) {
@@ -68,12 +67,10 @@ public class UserServiceImpl implements UserService {
    * @return the updated UserDTO
    */
   @Override
-  @Transactional
   public UserDTO updateUser(Long userId, UserDTO userDTO) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
     user.setName(userDTO.name());
-    user.setSurname(userDTO.surname());
     user.setEmail(userDTO.email());
     user = userRepository.save(user);
     return UserDTO.fromEntity(user);
@@ -86,7 +83,6 @@ public class UserServiceImpl implements UserService {
    * @throws IllegalArgumentException if no user is found with the provided ID
    */
   @Override
-  @Transactional
   public void deleteUser(Long userId) {
     if (!userRepository.existsById(userId)) {
       throw new IllegalArgumentException("User not found with ID: " + userId);
@@ -102,7 +98,6 @@ public class UserServiceImpl implements UserService {
    * @throws IllegalArgumentException if no user is found with the provided ID
    */
   @Override
-  @Transactional(readOnly = true)
   public UserDTO getUserById(Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
@@ -118,7 +113,6 @@ public class UserServiceImpl implements UserService {
    * @throws BadRequestException if the user already exists or the data is invalid
    */
   @Override
-  @Transactional
   public UserDTO createUser(UserDTO user) throws BadRequestException {
     // Attempt to find an existing user by email
     Optional<User> existingUser = userRepository.findByEmail(user.email());

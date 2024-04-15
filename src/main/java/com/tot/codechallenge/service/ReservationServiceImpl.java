@@ -24,6 +24,7 @@ import java.time.LocalTime;
  * applying business rules such as availability checks and validation of reservation times.
  */
 @Service
+@Transactional
 public class ReservationServiceImpl implements ReservationService {
 
   private final ReservationRepository reservationRepository;
@@ -52,7 +53,6 @@ public class ReservationServiceImpl implements ReservationService {
    * @throws BadRequestException if any validation fails
    */
   @Override
-  @Transactional
   public ReservationDTO createReservation(ReservationDTO reservationDTO) throws BadRequestException {
     // Validate user existence and get user
     User user = userService.checkUserIfExists(reservationDTO.userEmail());
@@ -92,7 +92,6 @@ public class ReservationServiceImpl implements ReservationService {
    * @return a {@link Page} of {@link Reservation} objects that match the criteria.
    */
   @Override
-  @Transactional(readOnly = true)
   public Page<ReservationDTO> findReservationsByOptionalDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
     Specification<Reservation> spec = (root, query, cb) -> {
       List<Predicate> predicates = new ArrayList<>();
@@ -119,7 +118,6 @@ public class ReservationServiceImpl implements ReservationService {
    * @throws BadRequestException if the reservation cannot be found or if validation fails
    */
   @Override
-  @Transactional
   public ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO)
       throws BadRequestException {
     Reservation reservation = reservationRepository.findById(reservationId)
@@ -140,7 +138,6 @@ public class ReservationServiceImpl implements ReservationService {
    * @param reservationId the ID of the reservation to delete
    */
   @Override
-  @Transactional
   public void deleteReservation(Long reservationId) {
     if (!reservationRepository.existsById(reservationId)) {
       throw new IllegalArgumentException("Reservation not found with ID: " + reservationId);
@@ -155,7 +152,6 @@ public class ReservationServiceImpl implements ReservationService {
    * @return the found reservation data
    */
   @Override
-  @Transactional(readOnly = true)
   public ReservationDTO findReservationById(Long reservationId) {
     Reservation reservation = reservationRepository.findById(reservationId)
         .orElseThrow(() -> new IllegalArgumentException("Reservation not found with ID: " + reservationId));
