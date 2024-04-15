@@ -41,7 +41,7 @@ public class ReservationControllerIntegrationTest {
 
   @BeforeEach
   void setup() {
-    userRepository.save(new User("janedoe@example.com", "Jane", "Doe"));
+    userRepository.save(new User("janedoe@example.com", "Jane Doe"));
   }
 
   @AfterEach
@@ -130,7 +130,7 @@ public class ReservationControllerIntegrationTest {
   }
 
   private Reservation prepareReservation() {
-    User user1 = new User("test1@example.com", "Bob", "Vance");
+    User user1 = new User("test1@example.com", "Bob Vance");
     user1 = userRepository.save(user1);
 
     Reservation reservation1 = new Reservation(user1, 4, 1, LocalDate.now().plusDays(1), LocalTime.of(19,0));
@@ -142,11 +142,11 @@ public class ReservationControllerIntegrationTest {
     LocalTime reservationTime = LocalTime.of(19, 0);
 
     List<User> users = List.of(
-        new User("test1@example.com", "Bob", "Vance"),
-        new User("test2@example.com", "Stanley", "Hudson"),
-        new User("test3@example.com", "Todd", "Packer"),
-        new User("test4@example.com", "Kelly", "Kapoor"),
-        new User("test5@example.com", "Oscar", "Martinez")
+        new User("test1@example.com", "Bob Vance"),
+        new User("test2@example.com", "Stanley Hudson"),
+        new User("test3@example.com", "Todd Packer"),
+        new User("test4@example.com", "Kelly Kapoor"),
+        new User("test5@example.com", "Oscar Martinez")
     );
 
     List<User> savedUsers = userRepository.saveAll(users);

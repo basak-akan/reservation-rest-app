@@ -42,7 +42,7 @@ class ReservationServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    user = new User("test@example.com", "Test", "User");
+    user = new User("test@example.com", "Test User");
     reservationDTO = new ReservationDTO(1L, "test@example.com", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
     reservation = new Reservation(user, 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
     MockitoAnnotations.openMocks(this);

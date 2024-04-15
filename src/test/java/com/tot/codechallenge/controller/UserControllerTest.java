@@ -35,7 +35,7 @@ public class UserControllerTest {
 
   @Test
   void testCreateUser() throws Exception {
-    UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john@example.com");
+    UserDTO userDTO = new UserDTO(1L, "John Doe", "john@example.com");
     when(userService.createUser(any(UserDTO.class))).thenReturn(userDTO);
 
     ResponseEntity<UserDTO> response = userController.createUser(userDTO);
@@ -47,7 +47,7 @@ public class UserControllerTest {
 
   @Test
   void testGetAllUsers() {
-    Page<UserDTO> userPage = new PageImpl<>(List.of(new UserDTO(1L, "John", "Doe", "john@example.com")));
+    Page<UserDTO> userPage = new PageImpl<>(List.of(new UserDTO(1L, "John Doe", "john@example.com")));
     when(userService.listAllUsers(anyString(), any(Pageable.class))).thenReturn(userPage);
 
     ResponseEntity<Page<UserDTO>> response = userController.getAllUsers("John", Pageable.unpaged());
@@ -59,7 +59,7 @@ public class UserControllerTest {
 
   @Test
   void testGetUserByIdFound() {
-    UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john@example.com");
+    UserDTO userDTO = new UserDTO(1L, "John Doe", "john@example.com");
     when(userService.getUserById(1L)).thenReturn(userDTO);
 
     ResponseEntity<UserDTO> response = userController.getUserById(1L);
@@ -80,14 +80,14 @@ public class UserControllerTest {
 
   @Test
   void testUpdateUser() throws Exception {
-    UserDTO userDTO = new UserDTO(1L, "John", "Updated", "john@example.com");
+    UserDTO userDTO = new UserDTO(1L, "John Updated", "john@example.com");
     when(userService.updateUser(eq(1L), any(UserDTO.class))).thenReturn(userDTO);
 
     ResponseEntity<UserDTO> response = userController.updateUser(1L, userDTO);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertEquals("Updated", response.getBody().surname());
+    assertTrue(response.getBody().name().contains("Updated"));
   }
 
   @Test
@@ -101,7 +101,7 @@ public class UserControllerTest {
 
   @Test
   void testCreateUserThrowsBadRequest() throws BadRequestException {
-    UserDTO userDTO = new UserDTO(null, "John", "Doe", "bademail");
+    UserDTO userDTO = new UserDTO(null, "John Doe", "bademail");
     when(userService.createUser(any(UserDTO.class))).thenThrow(new BadRequestException("Invalid data"));
 
     Exception exception = assertThrows(BadRequestException.class, () -> {

@@ -33,7 +33,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query("SELECT u FROM User u WHERE " +
       "(:searchTerm IS NULL OR " +
       "LOWER(u.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-      "LOWER(u.surname) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
       "LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
   Page<User> findByUserDetails(String searchTerm, Pageable pageable);
 

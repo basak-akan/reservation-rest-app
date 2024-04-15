@@ -35,20 +35,20 @@ public class UserServiceImplTest {
 
   @Test
   void testListAllUsers() {
-    Page<User> page = new PageImpl<>(List.of(new User("test@email.com", "Test", "User")));
+    Page<User> page = new PageImpl<>(List.of(new User("test@email.com", "Test User")));
     when(userRepository.findByUserDetails(anyString(), any(Pageable.class))).thenReturn(page);
 
     Page<UserDTO> result = userService.listAllUsers("test", of(0, 10));
 
     assertNotNull(result);
     assertFalse(result.isEmpty());
-    assertEquals("Test", result.getContent().get(0).name());
+    assertEquals("Test User", result.getContent().getFirst().name());
   }
 
   @Test
   void testCreateUser() throws BadRequestException {
-    UserDTO newUser = new UserDTO(null, "New", "User", "newuser@test.com");
-    User savedUser = new User("newuser@test.com", "New", "User");
+    UserDTO newUser = new UserDTO(null, "New User",  "newuser@test.com");
+    User savedUser = new User("newuser@test.com", "New User");
     savedUser.setId(1L);
 
     when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
@@ -57,13 +57,13 @@ public class UserServiceImplTest {
     UserDTO result = userService.createUser(newUser);
 
     assertNotNull(result);
-    assertEquals("New", result.name());
+    assertEquals("New User", result.name());
   }
 
   @Test
   void testCreateUserExistingEmail() {
-    UserDTO newUser = new UserDTO(null, "New", "User", "existuser@test.com");
-    User existingUser = new User("existuser@test.com", "Exist", "User");
+    UserDTO newUser = new UserDTO(null, "New User", "existuser@test.com");
+    User existingUser = new User("existuser@test.com", "Exist User");
     existingUser.setId(1L);
 
     when(userRepository.findByEmail("existuser@test.com")).thenReturn(Optional.of(existingUser));
@@ -73,7 +73,7 @@ public class UserServiceImplTest {
 
   @Test
   void testUpdateUserNotFound() {
-    UserDTO updateUser = new UserDTO(1L, "Update", "User", "updateuser@test.com");
+    UserDTO updateUser = new UserDTO(1L, "Update User", "updateuser@test.com");
 
     when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -96,7 +96,7 @@ public class UserServiceImplTest {
 
   @Test
   void testCreateUserWithDuplicateEmail() {
-    UserDTO newUser = new UserDTO(null, "John", "Doe", "john.doe@example.com");
+    UserDTO newUser = new UserDTO(null, "John Doe", "john.doe@example.com");
     when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(new User()));
 
     assertThrows(BadRequestException.class, () -> userService.createUser(newUser));
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
 
   @Test
   void testUpdateNonExistentUser() {
-    UserDTO updateUser = new UserDTO(1L, "John", "Doe", "john.doe@example.com");
+    UserDTO updateUser = new UserDTO(1L, "John Doe", "john.doe@example.com");
     when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     assertThrows(IllegalArgumentException.class, () -> userService.updateUser(1L, updateUser));

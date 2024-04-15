@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 /**
  * Entity representing a user in the system.
  * This class is mapped to the "users" table in the database.
- * It includes details about the user such as their email, name, and surname.
+ * It includes details about the user such as their email and name.
  * It also handles the relationship with reservations, indicating all reservations made by the user.
  */
 @Entity
@@ -35,9 +35,6 @@ public class User {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
-  private String surname;
-
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<Reservation> reservations = new HashSet<>();
 
@@ -47,10 +44,9 @@ public class User {
   public User() {
   }
 
-  public User(String email, String name, String surname) {
+  public User(String email, String name) {
     this.email = email;
     this.name = name;
-    this.surname = surname;
   }
 
   // Getters and setters
@@ -77,14 +73,6 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getSurname() {
-    return surname;
-  }
-
-  public void setSurname(String surname) {
-    this.surname = surname;
   }
 
   public Set<Reservation> getReservations() {

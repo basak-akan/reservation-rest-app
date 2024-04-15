@@ -11,8 +11,7 @@ import jakarta.validation.constraints.Size;
  * and other parts of the application or external systems.
  *
  * @param id The unique identifier of the user.
- * @param name The first name of the user.
- * @param surname The surname or last name of the user.
+ * @param name The name of the user.
  * @param email The email address of the user.
  */
 public record UserDTO (
@@ -20,9 +19,6 @@ public record UserDTO (
     @NotBlank(message = "Name cannot be blank")
     @Size(max = 50, message = "Name cannot exceed 50 characters")
     String name,
-    @NotBlank(message = "Surname cannot be blank")
-    @Size(max = 50, message = "Surname cannot exceed 50 characters")
-    String surname,
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email should be valid")
     String email) {
@@ -38,7 +34,6 @@ public record UserDTO (
     return new UserDTO(
         user.getId(),
         user.getName(),
-        user.getSurname(),
         user.getEmail()
     );
   }
@@ -53,7 +48,6 @@ public record UserDTO (
     User user = new User();
     user.setId(this.id());
     user.setName(this.name());
-    user.setSurname(this.surname());
     user.setEmail(this.email());
     return user;
   }

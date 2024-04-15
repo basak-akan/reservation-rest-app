@@ -34,7 +34,7 @@ public class UserControllerIntegrationTest {
   private User savedUser;
   @BeforeEach
   void setup() {
-    savedUser = userRepository.save(new User("janedoe@example.com", "Jane", "Doe"));
+    savedUser = userRepository.save(new User("janedoe@example.com", "Jane Doe"));
   }
 
   @AfterEach
@@ -69,8 +69,7 @@ public class UserControllerIntegrationTest {
     mockMvc.perform(get("/api/users/" + savedUser.getId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.email").value("janedoe@example.com"))
-        .andExpect(jsonPath("$.name").value("Jane"))
-        .andExpect(jsonPath("$.surname").value("Doe"));
+        .andExpect(jsonPath("$.name").value("Jane Doe"));
   }
 
   @Test
