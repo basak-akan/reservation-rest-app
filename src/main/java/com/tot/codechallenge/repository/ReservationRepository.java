@@ -7,14 +7,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Repository interface for handling {@link Reservation} entities.
  * This interface extends JpaRepository, enabling CRUD operations and pagination capabilities
  * for Reservation entities.
  */
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, JpaSpecificationExecutor<Reservation> {
 
   /**
    * Finds all reservations for a specific date.
@@ -39,15 +39,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
    * The search term is matched against user's name, surname, and email.
    * This method supports pagination.
    *
-   * @param searchTerm the term to match against user details (name, surname, email)
+   * @param startDate start date for the date range to search
+   * @param endDate end date for the date range to search
    * @param pageable pagination information
-   * @return a page of reservations containing any user details that match the search term
+   * @return a page of reservations between date range
    */
-  @Query("SELECT r FROM Reservation r JOIN r.user u WHERE " +
-      "(:searchTerm IS NULL OR " +
-      "LOWER(u.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-      "LOWER(u.surname) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-      "LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
-  Page<Reservation> findByUserDetails(String searchTerm, Pageable pageable);
+  Page<Reservation> findByReservationDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
 }

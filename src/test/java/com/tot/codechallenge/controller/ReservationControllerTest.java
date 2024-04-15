@@ -53,9 +53,9 @@ public class ReservationControllerTest {
   @Test
   void testGetReservations() {
     Page<ReservationDTO> reservationPage = new PageImpl<>(List.of(reservationDTO));
-    when(reservationService.findAllReservations(anyString(), any(Pageable.class))).thenReturn(reservationPage);
+    when(reservationService.findReservationsByOptionalDateRange(any(), any(), any(Pageable.class))).thenReturn(reservationPage);
 
-    ResponseEntity<Page<ReservationDTO>> response = reservationController.getReservations("searchTerm", Pageable.unpaged());
+    ResponseEntity<Page<ReservationDTO>> response = reservationController.getReservations(LocalDate.now(), LocalDate.now().plusDays(2), Pageable.unpaged());
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

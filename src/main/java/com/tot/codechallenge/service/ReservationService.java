@@ -1,6 +1,7 @@
 package com.tot.codechallenge.service;
 
 import com.tot.codechallenge.dto.ReservationDTO;
+import java.time.LocalDate;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,10 +51,11 @@ public interface ReservationService {
   /**
    * Retrieves all reservations that match the given search term, paginated according to the provided pageable object.
    *
-   * @param searchTerm a string used for searching reservations based on user details or reservation specifics
+   * @param startDate start date for date range to search
+   * @param endDate end date for date range to search
    * @param pageable a {@link Pageable} object specifying the pagination configuration
    * @return a {@link Page} of {@link ReservationDTO} matching the search criteria
    */
-  Page<ReservationDTO> findAllReservations(String searchTerm, Pageable pageable);
+  Page<ReservationDTO> findReservationsByOptionalDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
 }

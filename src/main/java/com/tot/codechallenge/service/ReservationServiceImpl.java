@@ -5,11 +5,14 @@ import com.tot.codechallenge.model.Reservation;
 import com.tot.codechallenge.model.User;
 import com.tot.codechallenge.repository.ReservationRepository;
 import com.tot.codechallenge.repository.UserRepository;
+import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,17 +75,39 @@ public class ReservationServiceImpl implements ReservationService {
   }
 
   /**
-   * Retrieves all reservations matching the search term across pages.
+   * Finds reservations optionally filtered by a date range.
+   * This method dynamically constructs the query based on the presence of start and/or end dates.
+   * It returns a pageable list of reservations that match the criteria.
    *
-   * @param searchTerm the filter applied to reservation details
-   * @param pageable pagination details
-   * @return a paginated list of reservations matching the search criteria
+   * <p>If only the start date is provided, it returns reservations from the start date onwards.
+   * If only the end date is provided, it returns reservations up to the end date.
+   * If both dates are provided, it returns reservations within the date range.
+   * If no dates are provided, it returns all reservations.</p>
+   *
+   * @param startDate the starting date of the range to filter the reservations (inclusive),
+   *                  or null if no start date is to be applied.
+   * @param endDate the ending date of the range to filter the reservations (inclusive),
+   *                or null if no end date is to be applied.
+   * @param pageable the pagination information.
+   * @return a {@link Page} of {@link Reservation} objects that match the criteria.
    */
   @Override
   @Transactional(readOnly = true)
-  public Page<ReservationDTO> findAllReservations(String searchTerm, Pageable pageable) {
-    Page<Reservation> reservations = reservationRepository.findByUserDetails(searchTerm, pageable);
-    return reservations.map(ReservationDTO::fromEntity);
+  public Page<ReservationDTO> findReservationsByOptionalDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    Specification<Reservation> spec = (root, query, cb) -> {
+      List<Predicate> predicates = new ArrayList<>();
+
+      if (startDate != null) {
+        predicates.add(cb.greaterThanOrEqualTo(root.get("reservationDate"), startDate));
+      }
+      if (endDate != null) {
+        predicates.add(cb.lessThanOrEqualTo(root.get("reservationDate"), endDate));
+      }
+
+      return cb.and(predicates.toArray(new Predicate[0]));
+    };
+
+    return reservationRepository.findAll(spec, pageable).map(ReservationDTO::fromEntity);
   }
 
   /**

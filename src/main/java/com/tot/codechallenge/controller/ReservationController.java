@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.time.LocalDate;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,12 +50,13 @@ public class ReservationController {
       return ResponseEntity.ok(createdReservation);
   }
 
-  @Operation(summary = "Get all reservations", description = "Retrieves a page of reservations optionally filtered by a search term for user details.")
+  @Operation(summary = "Get all reservations", description = "Retrieves a page of reservations optionally filtered by a date range")
   @GetMapping
-  public ResponseEntity<Page<ReservationDTO>> getReservations(@RequestParam(required = false) String searchTerm,
+  public ResponseEntity<Page<ReservationDTO>> getReservations(@RequestParam(value = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+      @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
       @PageableDefault(size = 10) Pageable pageable) {
 
-    Page<ReservationDTO> reservations = reservationService.findAllReservations(searchTerm, pageable);
+    Page<ReservationDTO> reservations = reservationService.findReservationsByOptionalDateRange(startDate, endDate, pageable);
     return ResponseEntity.ok(reservations);
   }
 
