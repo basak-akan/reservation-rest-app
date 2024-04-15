@@ -54,6 +54,6 @@ After starting the application, you can access the API documentation at http://l
 
 To run the automated tests for this system, use:
 
-    ```bash 
+   ```bash 
     ./gradlew test
 
