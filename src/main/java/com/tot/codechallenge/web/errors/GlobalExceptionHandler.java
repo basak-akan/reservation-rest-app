@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Object> handleGlobalException(Exception ex, WebRequest request) {
-    ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error occurred", request.getDescription(false));
+    ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request.getDescription(false));
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .contentType(MediaType.APPLICATION_JSON)
         .body(errorDetails);

@@ -59,8 +59,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     // Check if user already has a reservation on the given date
     boolean hasExistingReservation = reservationRepository.findByUserEmailAndReservationDate(
-        reservationDTO.userEmail(), reservationDTO.reservationDate()).isPresent();
-    if (hasExistingReservation) {
+        reservationDTO.userEmail(), reservationDTO.reservationDate()).get().isEmpty();
+    if (!hasExistingReservation) {
       throw new IllegalStateException("User can only have one reservation per date.");
     }
 

@@ -30,5 +30,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
    * @param reservationDate the date of the reservation
    * @return an Optional containing the found reservation if it exists
    */
-  Optional<Reservation> findByUserEmailAndReservationDate(String email, LocalDate reservationDate);
+  Optional<List<Reservation>> findByUserEmailAndReservationDate(String email, LocalDate reservationDate);
 }
