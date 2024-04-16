@@ -100,7 +100,8 @@ public class ReservationControllerIntegrationTest {
   @Test
   public void testUpdateReservation() throws Exception {
     // First, create a reservation to update
-    Reservation reservation = prepareReservation();
+
+    Reservation reservation = prepareReservation(prepareUser(), LocalDate.now().plusDays(1));
     String updateJson = "{\"userEmail\":\""+reservation.getUser().getEmail()+"\",\"numberOfGuests\":2,\"tablesReserved\":1,\"reservationDate\":\"" + LocalDate.now().plusDays(1) + "\",\"reservationTime\":\"21:00\"}";
 
     mockMvc.perform(put("/api/reservations/{id}", reservation.getId())
@@ -113,7 +114,7 @@ public class ReservationControllerIntegrationTest {
   @Test
   public void testDeleteReservation() throws Exception {
     // First, create a reservation to delete
-    Reservation reservation = prepareReservation();
+    Reservation reservation = prepareReservation(prepareUser(), LocalDate.now().plusDays(1));
 
     mockMvc.perform(MockMvcRequestBuilders.delete("/api/reservations/{id}", reservation.getId()))
         .andExpect(status().isOk());
@@ -129,11 +130,72 @@ public class ReservationControllerIntegrationTest {
         .andExpect(jsonPath("$.content[0].userEmail").value("test1@example.com"));
   }
 
-  private Reservation prepareReservation() {
-    User user1 = new User("test1@example.com", "Bob Vance");
-    user1 = userRepository.save(user1);
+  @Test
+  public void testGetReservationsWithDateRange() throws Exception {
 
-    Reservation reservation1 = new Reservation(user1, 4, 1, LocalDate.now().plusDays(1), LocalTime.of(19,0));
+    User user1 = prepareUser();
+
+    prepareReservation(user1, LocalDate.of(2024, 4, 1));
+    prepareReservation(user1, LocalDate.of(2024, 4, 2));
+    prepareReservation(user1, LocalDate.of(2024, 4, 3));
+    prepareReservation(user1, LocalDate.of(2024, 4, 4));
+    prepareReservation(user1, LocalDate.of(2024, 5, 1));
+
+    LocalDate startDate = LocalDate.of(2024, 4, 1);
+    LocalDate endDate = LocalDate.of(2024, 4, 30);
+
+    mockMvc.perform(get("/api/reservations")
+            .param("start", startDate.toString())
+            .param("end", endDate.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", hasSize(4)));
+  }
+
+  @Test
+  public void testGetReservationsWithOnlyStartDate() throws Exception {
+
+    User user1 = prepareUser();
+
+    prepareReservation(user1, LocalDate.of(2024, 4, 1));
+    prepareReservation(user1, LocalDate.of(2024, 4, 2));
+    prepareReservation(user1, LocalDate.of(2024, 4, 3));
+    prepareReservation(user1, LocalDate.of(2024, 4, 4));
+    prepareReservation(user1, LocalDate.of(2024, 5, 1));
+
+    LocalDate startDate = LocalDate.of(2024, 4, 3);
+
+    mockMvc.perform(get("/api/reservations")
+            .param("start", startDate.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", hasSize(3)));
+  }
+
+  @Test
+  public void testGetReservationsWithOnlyEndDate() throws Exception {
+
+    User user1 = prepareUser();
+
+    prepareReservation(user1, LocalDate.of(2024, 4, 1));
+    prepareReservation(user1, LocalDate.of(2024, 4, 30));
+    prepareReservation(user1, LocalDate.of(2024, 5, 3));
+    prepareReservation(user1, LocalDate.of(2024, 5, 4));
+    prepareReservation(user1, LocalDate.of(2024, 5, 1));
+
+    LocalDate endDate = LocalDate.of(2024, 4, 30);
+
+    mockMvc.perform(get("/api/reservations")
+            .param("end", endDate.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.content", hasSize(2)));
+  }
+
+  private User prepareUser() {
+    User user1 = new User("test1@example.com", "Bob Vance");
+    return userRepository.save(user1);
+  }
+
+  private Reservation prepareReservation(User user1, LocalDate reservationDate) {
+    Reservation reservation1 = new Reservation(user1, 4, 1, reservationDate, LocalTime.of(19,0));
     return reservationRepository.save(reservation1);
   }
 
@@ -157,4 +219,5 @@ public class ReservationControllerIntegrationTest {
 
     reservationRepository.saveAll(reservations);
   }
+
 }
