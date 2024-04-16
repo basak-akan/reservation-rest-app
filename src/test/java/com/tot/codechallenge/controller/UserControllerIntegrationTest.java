@@ -97,4 +97,13 @@ public class UserControllerIntegrationTest {
         .andExpect(jsonPath("$.content[0].email").value("janedoe@example.com"));
   }
 
+  @Test
+  public void whenPostRequestToUsersAndInValidUser_thenCorrectReponse() throws Exception {
+    String user = "{\"email\":\"not an email\",\"name\":\"\"}";
+    mockMvc.perform(post("/api/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(user))
+        .andExpect(status().isBadRequest());
+  }
+
 }

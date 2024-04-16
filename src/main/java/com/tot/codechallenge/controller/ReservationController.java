@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +45,7 @@ public class ReservationController {
       @ApiResponse(responseCode = "400", description = "Invalid reservation data provided")
   })
   @PostMapping
-  public ResponseEntity<ReservationDTO> createReservation(@Validated @RequestBody ReservationDTO reservationDTO) throws Exception {
+  public ResponseEntity<ReservationDTO> createReservation(@RequestBody @Valid ReservationDTO reservationDTO) throws Exception {
       ReservationDTO createdReservation = reservationService.createReservation(reservationDTO);
       return ResponseEntity.ok(createdReservation);
   }

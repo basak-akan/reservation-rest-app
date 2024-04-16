@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +45,7 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "Invalid user data provided")
   })
   @PostMapping
-  public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserDTO userDTO) throws BadRequestException {
+  public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO) throws BadRequestException {
       UserDTO createdUser = userService.createUser(userDTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
   }
@@ -73,7 +73,7 @@ public class UserController {
       @ApiResponse(responseCode = "404", description = "User not found")
   })
   @PutMapping("/{id}")
-  public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,@Validated @RequestBody UserDTO userDTO) throws BadRequestException {
+  public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,@RequestBody @Valid UserDTO userDTO) throws BadRequestException {
       UserDTO updatedUser = userService.updateUser(id, userDTO);
       return ResponseEntity.ok(updatedUser);
   }
