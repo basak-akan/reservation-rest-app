@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,9 +59,9 @@ public class ReservationServiceImpl implements ReservationService {
     User user = userService.checkUserIfExists(reservationDTO.userEmail());
 
     // Check if user already has a reservation on the given date
-    boolean hasExistingReservation = reservationRepository.findByUserEmailAndReservationDate(
-        reservationDTO.userEmail(), reservationDTO.reservationDate()).get().isEmpty();
-    if (!hasExistingReservation) {
+    Optional<List<Reservation>> existingReservations = reservationRepository.findByUserEmailAndReservationDate(
+        reservationDTO.userEmail(), reservationDTO.reservationDate());
+    if (existingReservations.isPresent() && !existingReservations.get().isEmpty()) {
       throw new IllegalStateException("User can only have one reservation per date.");
     }
 
