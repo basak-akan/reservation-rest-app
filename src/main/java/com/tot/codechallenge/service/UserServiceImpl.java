@@ -51,12 +51,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public User checkUserIfExists(String email) throws IllegalArgumentException {
-    Optional<User> existingUser = userRepository.findByEmail(email);
-    if (existingUser.isPresent()) {
-      return existingUser.get();
-    } else {
-      throw new IllegalArgumentException("User not found with email: " + email);
-    }
+      return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
   }
 
   /**
@@ -118,19 +113,14 @@ public class UserServiceImpl implements UserService {
     Optional<User> existingUser = userRepository.findByEmail(user.email());
     if (existingUser.isPresent()) {
       throw new BadRequestException("User already exists");
-    } else {
-      // User does not exist, proceed to create a new one
-      return UserDTO.fromEntity(createNewUser(user));
     }
-  }
-
-  private User createNewUser(UserDTO user) throws BadRequestException {
     try {
-      return userRepository.save(user.toEntity());
+        // User does not exist, proceed to save a new user
+        User newUser = userRepository.save(user.toEntity());
+        return UserDTO.fromEntity(newUser);
     } catch (DataIntegrityViolationException e) {
-      // Handle the case where the email might be duplicate if two requests come in simultaneously
-      throw new BadRequestException("A user with the provided email already exists.");
+        // Handle the case where the email might be duplicate if two requests come in simultaneously
+        throw new BadRequestException("A user with the provided email already exists.", e);
     }
   }
-
 }

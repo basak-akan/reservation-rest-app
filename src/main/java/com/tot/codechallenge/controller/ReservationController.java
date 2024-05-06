@@ -2,6 +2,7 @@ package com.tot.codechallenge.controller;
 
 import com.tot.codechallenge.dto.ReservationDTO;
 import com.tot.codechallenge.service.ReservationService;
+import com.tot.codechallenge.util.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +12,8 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +41,12 @@ public class ReservationController {
     this.reservationService = reservationService;
   }
 
+
   @Operation(summary = "Create a new reservation", description = "Creates a new reservation with the provided reservation data.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Reservation created successfully", content = @Content(schema = @Schema(implementation = ReservationDTO.class))),
-      @ApiResponse(responseCode = "400", description = "Invalid reservation data provided")
+      @ApiResponse(responseCode = "400", description = "Invalid reservation data provided"),
+      @ApiResponse(responseCode = "500", description = "User can only have one reservation per date")
   })
   @PostMapping
   public ResponseEntity<ReservationDTO> createReservation(@RequestBody @Valid ReservationDTO reservationDTO) throws Exception {
@@ -54,8 +58,11 @@ public class ReservationController {
   @GetMapping
   public ResponseEntity<Page<ReservationDTO>> getReservations(@RequestParam(value = "start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
       @RequestParam(value = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-      @PageableDefault(size = 10) Pageable pageable) {
-
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "10") int size,
+      @RequestParam(value = "sort", defaultValue = "id,asc") String[] sort) {
+    Sort sorting = ControllerUtil.parseSortParameter(sort);
+    Pageable pageable = PageRequest.of(page, size, sorting);
     Page<ReservationDTO> reservations = reservationService.findReservationsByOptionalDateRange(startDate, endDate, pageable);
     return ResponseEntity.ok(reservations);
   }

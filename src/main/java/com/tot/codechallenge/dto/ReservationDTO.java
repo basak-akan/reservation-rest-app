@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -67,6 +68,7 @@ public record ReservationDTO(
   public Reservation toEntity(User user) {
     Reservation reservation = new Reservation();
     reservation.setUser(user); // Assumes User is provided externally
+    reservation.setId(this.id());
     reservation.setNumberOfGuests(this.numberOfGuests());
     reservation.setTablesReserved(this.tablesReserved());
     reservation.setReservationDate(this.reservationDate());

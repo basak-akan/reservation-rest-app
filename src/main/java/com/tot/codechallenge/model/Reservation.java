@@ -11,6 +11,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entity representing a reservation in the restaurant reservation system.
@@ -20,6 +23,7 @@ import java.time.LocalTime;
  */
 @Entity
 @Table(name = "reservations")
+@Getter @Setter @NoArgsConstructor
 public class Reservation {
 
   @Id
@@ -42,11 +46,6 @@ public class Reservation {
   @Column(name = "reservation_time", nullable = false)
   private LocalTime reservationTime;
 
-  /**
-   * Default constructor used by JPA.
-   */
-  public Reservation() {
-  }
 
   public Reservation(User user, int numberOfGuests, int tablesReserved, LocalDate reservationDate, LocalTime reservationTime) {
     this.user = user;
@@ -54,55 +53,6 @@ public class Reservation {
     this.tablesReserved = tablesReserved;
     this.reservationDate = reservationDate;
     this.reservationTime = reservationTime;
-  }
-
-  // Getters and setters
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public LocalDate getReservationDate() {
-    return reservationDate;
-  }
-
-  public void setReservationDate(LocalDate reservationDate) {
-    this.reservationDate = reservationDate;
-  }
-
-  public LocalTime getReservationTime() {
-    return reservationTime;
-  }
-
-  public void setReservationTime(LocalTime reservationTime) {
-    this.reservationTime = reservationTime;
-  }
-
-  public int getNumberOfGuests() {
-    return numberOfGuests;
-  }
-
-  public void setNumberOfGuests(int numberOfGuests) {
-    this.numberOfGuests = numberOfGuests;
-  }
-
-  public int getTablesReserved() {
-    return tablesReserved;
-  }
-
-  public void setTablesReserved(int tablesReserved) {
-    this.tablesReserved = tablesReserved;
   }
 
 }

@@ -50,7 +50,7 @@ public class UserControllerTest {
     Page<UserDTO> userPage = new PageImpl<>(List.of(new UserDTO(1L, "John Doe", "john@example.com")));
     when(userService.listAllUsers(anyString(), any(Pageable.class))).thenReturn(userPage);
 
-    ResponseEntity<Page<UserDTO>> response = userController.getAllUsers("John", Pageable.unpaged());
+    ResponseEntity<Page<UserDTO>> response = userController.getAllUsers("John", 0, 10, new String[]{"id,asc"});
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

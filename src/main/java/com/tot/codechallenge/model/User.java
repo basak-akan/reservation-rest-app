@@ -11,6 +11,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,6 +26,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Getter @Setter @NoArgsConstructor
 public class User {
 
   @Id
@@ -38,49 +42,9 @@ public class User {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<Reservation> reservations = new HashSet<>();
 
-  /**
-   * Default constructor used by JPA.
-   */
-  public User() {
-  }
-
   public User(String email, String name) {
     this.email = email;
     this.name = name;
-  }
-
-  // Getters and setters
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Set<Reservation> getReservations() {
-    return reservations;
-  }
-
-  public void setReservations(Set<Reservation> reservations) {
-    this.reservations = reservations;
   }
 
   // Utility method to add reservations

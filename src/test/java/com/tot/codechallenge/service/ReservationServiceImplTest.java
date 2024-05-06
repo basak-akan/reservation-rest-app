@@ -160,4 +160,12 @@ class ReservationServiceImplTest {
     BadRequestException thrown = assertThrows(BadRequestException.class, () -> reservationService.createReservation(reservationDTO));
     assertTrue(thrown.getMessage().contains("Invalid reservation time"));
   }
+
+  @Test
+  void testReservationIsValid(){
+    reservationDTO = new ReservationDTO(1L, "test@example.com", 4, 1, LocalDate.now().plusDays(1), LocalTime.of(20, 0));
+    when(userService.checkUserIfExists(anyString())).thenReturn(user);
+    when(reservationRepository.save(any())).thenReturn(reservation);
+    assertDoesNotThrow(() -> reservationService.createReservation(reservationDTO));
+  }
 }

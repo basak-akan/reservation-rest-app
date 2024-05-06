@@ -55,7 +55,7 @@ public class ReservationControllerTest {
     Page<ReservationDTO> reservationPage = new PageImpl<>(List.of(reservationDTO));
     when(reservationService.findReservationsByOptionalDateRange(any(), any(), any(Pageable.class))).thenReturn(reservationPage);
 
-    ResponseEntity<Page<ReservationDTO>> response = reservationController.getReservations(LocalDate.now(), LocalDate.now().plusDays(2), Pageable.unpaged());
+    ResponseEntity<Page<ReservationDTO>> response = reservationController.getReservations(LocalDate.now(), LocalDate.now().plusDays(2), 0, 10, new String[]{"id,asc"});
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

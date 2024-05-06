@@ -3,6 +3,7 @@ package com.tot.codechallenge.controller;
 import com.tot.codechallenge.dto.UserDTO;
 import com.tot.codechallenge.model.User;
 import com.tot.codechallenge.service.UserService;
+import com.tot.codechallenge.util.ControllerUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,8 +54,9 @@ public class UserController {
 
   @Operation(summary = "Get all users", description = "Retrieves all users optionally filtered by a search term and paginated.")
   @GetMapping
-  public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(required = false) String searchTerm,
-      @PageableDefault(size = 10) Pageable pageable) {
+  public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(required = false) String searchTerm, @RequestParam(value = "page", defaultValue = "0") int page,  @RequestParam(value = "size", defaultValue = "10") int size,  @RequestParam(value = "sort", defaultValue = "id,asc") String[] sort) {
+    Sort sorting = ControllerUtil.parseSortParameter(sort);
+    Pageable pageable = PageRequest.of(page, size, sorting);
     Page<UserDTO> users = userService.listAllUsers(searchTerm, pageable);
     return ResponseEntity.ok(users);
   }
@@ -85,4 +88,5 @@ public class UserController {
       userService.deleteUser(id);
       return ResponseEntity.noContent().build();
   }
+
 }
